@@ -11,18 +11,45 @@ function stopCalc(){
 clearInterval(interval);}
 </script>
 <?php
+//session_start();
 require 'koneksi.php';
-session_start();
+require_once('database.php');
 require_once('library.php');
 $rand = get_rand_id(8);
-echo $rand;
+//echo $rand;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Admin</title>
-<link href="css/mystyle.css" rel="stylesheet" type="text/css">
 <link href="css/style.css" rel="stylesheet" type="text/css">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css" />
+
+<script src="js/moment.min.js"></script> 
+<script type="text/javascript" src="js/moment-with-locales.js"></script>  
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<script src="js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+        $(function () {
+            $('#datetimepicker2').datetimepicker({
+            	locale: 'id',
+            	defaultDate: new Date()
+            });
+            
+        });
+    });
+</script>
+
+
+
 <style type="text/css">
 
 .ds_box {
@@ -71,7 +98,6 @@ echo $rand;
 } /* This hover code won't work for IE */
 
 </style>
-<link type="text/css" rel="stylesheet" href="css/style.htm">
 <style type="text/css">
 <!--
 body {
@@ -117,12 +143,14 @@ function MM_validateForm() { //v4.0
   } if (errors) alert('The following error(s) occurred:\n'+errors);
   document.MM_returnValue = (errors == '');
 }
+
+
 //-->
 </script>
 </head>
 
 <body>
-<?php include("header.php"); ?>
+<?php //include("header.php"); ?>
 
 	</td>
   </tr>
@@ -136,282 +164,7 @@ function MM_validateForm() { //v4.0
     <td id="ds_calclass"> </td>
   </tr>
 </tbody></table>
-<script type="text/javascript">
-// <!-- <![CDATA[
 
-// Project: Dynamic Date Selector (DtTvB) - 2006-03-16
-// Script featured on JavaScript Kit- http://www.javascriptkit.com
-// Code begin...
-// Set the initial date.
-var ds_i_date = new Date();
-ds_c_month = ds_i_date.getMonth() + 1;
-ds_c_year = ds_i_date.getFullYear();
-
-// Get Element By Id
-function ds_getel(id) {
-	return document.getElementById(id);
-}
-
-// Get the left and the top of the element.
-function ds_getleft(el) {
-	var tmp = el.offsetLeft;
-	el = el.offsetParent
-	while(el) {
-		tmp += el.offsetLeft;
-		el = el.offsetParent;
-	}
-	return tmp;
-}
-function ds_gettop(el) {
-	var tmp = el.offsetTop;
-	el = el.offsetParent
-	while(el) {
-		tmp += el.offsetTop;
-		el = el.offsetParent;
-	}
-	return tmp;
-}
-
-// Output Element
-var ds_oe = ds_getel('ds_calclass');
-// Container
-var ds_ce = ds_getel('ds_conclass');
-
-// Output Buffering
-var ds_ob = '';
-function ds_ob_clean() {
-	ds_ob = '';
-}
-function ds_ob_flush() {
-	ds_oe.innerHTML = ds_ob;
-	ds_ob_clean();
-}
-function ds_echo(t) {
-	ds_ob += t;
-}
-
-var ds_element; // Text Element...
-
-var ds_monthnames = [
-'January', 'February', 'March', 'April', 'May', 'June',
-'July', 'August', 'September', 'October', 'November', 'December'
-]; // You can translate it for your language.
-
-var ds_daynames = [
-'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
-]; // You can translate it for your language.
-
-// Calendar template
-function ds_template_main_above(t) {
-	return '<table cellpadding="3" cellspacing="1" class="ds_tbl">'
-	     + '<tr>'
-		 + '<td class="ds_head" style="cursor: pointer" onclick="ds_py();">&lt;&lt;</td>'
-		 + '<td class="ds_head" style="cursor: pointer" onclick="ds_pm();">&lt;</td>'
-		 + '<td class="ds_head" style="cursor: pointer" onclick="ds_hi();" colspan="3">[Close]</td>'
-		 + '<td class="ds_head" style="cursor: pointer" onclick="ds_nm();">&gt;</td>'
-		 + '<td class="ds_head" style="cursor: pointer" onclick="ds_ny();">&gt;&gt;</td>'
-		 + '</tr>'
-	     + '<tr>'
-		 + '<td colspan="7" class="ds_head">' + t + '</td>'
-		 + '</tr>'
-		 + '<tr>';
-}
-
-function ds_template_day_row(t) {
-	return '<td class="ds_subhead">' + t + '</td>';
-	// Define width in CSS, XHTML 1.0 Strict doesn't have width property for it.
-}
-
-function ds_template_new_week() {
-	return '</tr><tr>';
-}
-
-function ds_template_blank_cell(colspan) {
-	return '<td colspan="' + colspan + '"></td>'
-}
-
-function ds_template_day(d, m, y) {
-	return '<td class="ds_cell" onclick="ds_onclick(' + d + ',' + m + ',' + y + ')">' + d + '</td>';
-	// Define width the day row.
-}
-
-function ds_template_main_below() {
-	return '</tr>'
-	     + '</table>';
-}
-
-// This one draws calendar...
-function ds_draw_calendar(m, y) {
-	// First clean the output buffer.
-	ds_ob_clean();
-	// Here we go, do the header
-	ds_echo (ds_template_main_above(ds_monthnames[m - 1] + ' ' + y));
-	for (i = 0; i < 7; i ++) {
-		ds_echo (ds_template_day_row(ds_daynames[i]));
-	}
-	// Make a date object.
-	var ds_dc_date = new Date();
-	ds_dc_date.setMonth(m - 1);
-	ds_dc_date.setFullYear(y);
-	ds_dc_date.setDate(1);
-	if (m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12) {
-		days = 31;
-	} else if (m == 4 || m == 6 || m == 9 || m == 11) {
-		days = 30;
-	} else {
-		days = (y % 4 == 0) ? 29 : 28;
-	}
-	var first_day = ds_dc_date.getDay();
-	var first_loop = 1;
-	// Start the first week
-	ds_echo (ds_template_new_week());
-	// If sunday is not the first day of the month, make a blank cell...
-	if (first_day != 0) {
-		ds_echo (ds_template_blank_cell(first_day));
-	}
-	var j = first_day;
-	for (i = 0; i < days; i ++) {
-		// Today is sunday, make a new week.
-		// If this sunday is the first day of the month,
-		// we've made a new row for you already.
-		if (j == 0 && !first_loop) {
-			// New week!!
-			ds_echo (ds_template_new_week());
-		}
-		// Make a row of that day!
-		ds_echo (ds_template_day(i + 1, m, y));
-		// This is not first loop anymore...
-		first_loop = 0;
-		// What is the next day?
-		j ++;
-		j %= 7;
-
-	}
-	// Do the footer
-	ds_echo (ds_template_main_below());
-	// And let's display..
-	ds_ob_flush();
-	// Scroll it into view.
-	ds_ce.scrollIntoView();
-}
-
-// A function to show the calendar.
-// When user click on the date, it will set the content of t.
-function ds_sh(t) {
-	// Set the element to set...
-	ds_element = t;
-	// Make a new date, and set the current month and year.
-	var ds_sh_date = new Date();
-	ds_c_month = ds_sh_date.getMonth() + 1;
-	ds_c_year = ds_sh_date.getFullYear();
-	// Draw the calendar
-	ds_draw_calendar(ds_c_month, ds_c_year);
-	// To change the position properly, we must show it first.
-	ds_ce.style.display = '';
-	// Move the calendar container!
-	the_left = ds_getleft(t);
-	the_top = ds_gettop(t) + t.offsetHeight;
-	ds_ce.style.left = the_left + 'px';
-	ds_ce.style.top = the_top + 'px';
-	// Scroll it into view.
-	ds_ce.scrollIntoView();
-}
-
-// Hide the calendar.
-function ds_hi() {
-	ds_ce.style.display = 'none';
-}
-
-// Moves to the next month...
-function ds_nm() {
-	// Increase the current month.
-	ds_c_month ++;
-	// We have passed December, let's go to the next year.
-	// Increase the current year, and set the current month to January.
-	if (ds_c_month > 12) {
-		ds_c_month = 1;
-		ds_c_year++;
-	}
-	// Redraw the calendar.
-	ds_draw_calendar(ds_c_month, ds_c_year);
-}
-
-// Moves to the previous month...
-function ds_pm() {
-	ds_c_month = ds_c_month - 1; // Can't use dash-dash here, it will make the page invalid.
-	// We have passed January, let's go back to the previous year.
-	// Decrease the current year, and set the current month to December.
-	if (ds_c_month < 1) {
-		ds_c_month = 12;
-		ds_c_year = ds_c_year - 1; // Can't use dash-dash here, it will make the page invalid.
-	}
-	// Redraw the calendar.
-	ds_draw_calendar(ds_c_month, ds_c_year);
-}
-
-// Moves to the next year...
-function ds_ny() {
-	// Increase the current year.
-	ds_c_year++;
-	// Redraw the calendar.
-	ds_draw_calendar(ds_c_month, ds_c_year);
-}
-
-// Moves to the previous year...
-function ds_py() {
-	// Decrease the current year.
-	ds_c_year = ds_c_year - 1; // Can't use dash-dash here, it will make the page invalid.
-	// Redraw the calendar.
-	ds_draw_calendar(ds_c_month, ds_c_year);
-}
-
-// Format the date to output.
-function ds_format_date(d, m, y) {
-	// 2 digits month.
-	m2 = '00' + m;
-	m2 = m2.substr(m2.length - 2);
-	// 2 digits day.
-	d2 = '00' + d;
-	d2 = d2.substr(d2.length - 2);
-	// YYYY-MM-DD
-	return d2 + '/' + m2 + '/'+ y;
-}
-
-// When the user clicks the day.
-function ds_onclick(d, m, y) {
-	// Hide the calendar.
-	ds_hi();
-	// Set the value of it, if we can.
-	if (typeof(ds_element.value) != 'undefined') {
-		ds_element.value = ds_format_date(d, m, y);
-	// Maybe we want to set the HTML in it.
-	} else if (typeof(ds_element.innerHTML) != 'undefined') {
-		ds_element.innerHTML = ds_format_date(d, m, y);
-	// I don't know how should we display it, just alert it to user.
-	} else {
-		alert (ds_format_date(d, m, y));
-	}
-}
-
-function getSelected(opt)
- {
-
- 	var opt=document.frmExport.opt;
-            for (var intLoop = 0; intLoop < opt.length; intLoop++)
-			 {
-			  if (!(opt.options[intLoop].selected))
-			   {
-			   		alert("Select any one field!");
-					return false;
-               }
-		    }
-			return true;
-  }
-
-// And here is the end.
-
-// ]]> -->
-</script>
  <br/>
   <table border="0" align="center" width="100%">
     <tbody>
@@ -457,12 +210,13 @@ function getSelected(opt)
             <td>&nbsp;</td>
             <td>
 							<select name="id" id="id">
+								<option selected>-- --</option>
 								<?php
 									$query = mysqli_query($kon, "SELECT id,name FROM tbl_member");
 									while ($siswa = mysqli_fetch_array($query)):
 								?>
 
-								<option><?php echo $siswa['id'] ." | ". $siswa['name']; ?></option>
+								<option value="<?php echo $siswa['id'] ?>"><?php echo $siswa['id'] ." | ". $siswa['name']; ?></option>
 
 								<?php endwhile; ?>
 							</select>
@@ -524,17 +278,35 @@ function getSelected(opt)
           <tr>
             <td class="TrackMediumBlue" align="right">Consignment No  : </td>
             <td width="13">&nbsp;</td>
-            <td width="477"><input name="ConsignmentNo"  value="<?php echo strtoupper($rand); ?>" id="ConsignmentNo"  readonly="true" maxlength="13" size="40"  type="TEXT">
+            <td width="477"><input name="ConsignmentNo" id="ConsignmentNo" maxlength="14" size="40"  type="TEXT" onInput="javascript: if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
                 <span class="REDLink">*</span> </td>
           </tr>
           <tr>
             <td class="TrackMediumBlue" align="right">Type of Shipment  :</td>
             <td>&nbsp;</td>
-            <td><select id="Shiptype" name="Shiptype">
+            <td>
+            <select id="Shiptype" name="Shiptype">
+            	<option selected="">-- --</option>
+            	<?php
+            	$sql = "SELECT id_shipment, name_shipment FROM tbl_type_shipment";
+            	$result = dbQuery($sql);		
+				while($data = dbArray($result)) {
+					extract($data);
+				?>
+				<option value="<?php echo $id_shipment ?>"><?php echo $name_shipment ?></option>
+				<?php
+				}
+				?>
+            </select>
+             
+
+								
+            
+            <!-- <select id="Shiptype" name="Shiptype">
                 <option value="Documents" selected="selected">Documents</option>
                 <option value="Parcel">Parcel</option>
                 <option value="Sentiments">Sentiments</option>
-            </select>
+            </select> -->
 			</td>
           </tr>
           <tr>
@@ -548,24 +320,38 @@ function getSelected(opt)
 							<input type='text' value="0" id="jumlah" size="10" maxlength="10" name="jumlah" onchange='tryNumberFormat(this.form.thirdBox);' readonly>
               (kg)</td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td class="TrackMediumBlue" align="right">Invoice no  :</td>
             <td>&nbsp;</td>
             <td><input name="Invoiceno" id="Invoiceno" size="40" maxlength="20" onKeyUp="check_phone('Invoiceno')" type="TEXT"></td>
-          </tr>
+          </tr> -->
           <tr>
             <td class="TrackMediumBlue" align="right">Qnty  :</td>
             <td>&nbsp;</td>
             <td><input name="Qnty" id="Qnty" maxlength="10" size="20" type="TEXT"></td>
           </tr>
           <tr>
-            <td class="TrackMediumBlue" align="right">Booking Mode :</td>
+            <td class="TrackMediumBlue" align="right">Term Of Payment :</td>
             <td>&nbsp;</td>
-            <td><select name="Bookingmode" id="Bookingmode">
+            <td>
+            <select name="Bookingmode" id="Bookingmode">
+            	<option selected>-- --</option>
+            	<?php
+            	$sql = "SELECT id_term_payment, name_term_payment FROM `tbl_term_payment`";
+            	$result = dbQuery($sql);		
+				while($data = dbArray($result)) {
+					extract($data);
+				?>
+				<option value="<?php echo $id_term_payment ?>"><?php echo $name_term_payment ?></option>
+				<?php
+				}
+				?>
+            </select>
+            <!-- <select name="Bookingmode" id="Bookingmode">
                 <option selected="selected" value="Paid">Paid</option>
                 <option value="ToPay">ToPay</option>
                 <option value="TBB">TBB</option>
-            </select></td>
+            </select> --></td>
           </tr>
           <tr>
             <td class="TrackMediumBlue" align="right">Total freight : </td>
@@ -575,41 +361,104 @@ function getSelected(opt)
           <tr>
             <td class="TrackMediumBlue" align="right">Mode : </td>
             <td>&nbsp;</td>
-            <td><select name="Mode" id="Mode">
-                <option selected="selected" value="Air">Air</option>
-                <option value="Road">Road</option>
-                <option value="Train">Train</option>
+            <td>
+            <script type="text/javascript">
+            	function getValue() {
+				<?php
+				 	$query = "SELECT * FROM tbl_use_mode_shipment";
+				 	$result = dbQuery($query);		
+					while($data = dbArray($result)) {
+						extract($data);
+						$idUse = $id_mode_shipment;
+						echo "if (document.autoSumForm.Mode.value == \"".$idUse."\")";
+				   		echo "{";
+				   		$content = "document.getElementById('use_mode').innerHTML = \"";
+				   		$content .= "<option value='".$id_use_mode_shipment."' selected>".$name_use_mode_shipment."</option>";
+				   		$content .= "\"";
+				   		echo $content;
+				   		echo "}\n"; 
+					}
+				 ?>
+				}
+            </script>
+            <select name="Mode" id="Mode" onChange="getValue()">
+            	<option selected="">-- --</option>
+            	<?php
+            	$sql = "SELECT id_mode_shipment, name_mode_shipment FROM tbl_mode_shipment";
+            	$result = dbQuery($sql);		
+				while($data = dbArray($result)) {
+					extract($data);
+				?>
+				<option value="<?php echo $id_mode_shipment ?>"><?php echo $name_mode_shipment ?></option>
+				<?php
+				}
+				?>
+            </select>
+            <!-- <select name="Mode" id="Mode" onChange="getValue(this.form)">
+            	<option selected> </option>
+                <option value="Air">Air</option>
+                <option value="Land">Land</option>
 				<option value="Sea">Sea</option>
-            </select></td>
+            </select> --></td>
           </tr>
           <tr>
+            <td class="TrackMediumBlue" align="right">Use : </td>
+            <td>&nbsp;</td>
+            <td>
+            <select name="use_mode" id="use_mode">
+            	
+            </select>
+            <!-- <select name="use_mode" id="use_mode">
+            	<option selected value=''></option>
+                <option value="Car">Car</option>
+                <option value="Airplane">Airplane</option>
+                <option value="Train">Train</option>
+				<option value="Motorcycle">Motorcycle</option>
+				<option value="Ship">Ship</option>
+            </select> --></td>
+          </tr>
+          <!-- <tr>
             <td class="TrackNormalBlue" align="right"><span class="TrackMediumBlue">Dept time : </span></td>
             <td>&nbsp;</td>
             <td><input name="Depttime" id="Depttime" maxlength="50" size="20" type="TEXT"></td>
-          </tr>
-          <tr>
+          </tr> -->
+          <!-- <tr>
             <td class="TrackNormalBlue" align="right">Destination Office:</td>
             <td>&nbsp;</td>
             <td><input name="Destination" id="Destination" maxlength="50" size="40" type="TEXT">
                 <span class="REDLink">*</span> </td>
-          </tr>
+          </tr> -->
           <tr>
             <td class="TrackNormalBlue" align="right">Pickup Date  :</td>
-            <td>&nbsp;</td>
-            <td><input name="Packupdate" id="Packupdate" readonly="True" style="cursor: text;" onClick="ds_sh(this);" maxlength="15" type="TEXT">
-                <span class="REDLink">*</span> </td>
-          </tr>
-          <tr>
-            <td class="TrackNormalBlue" align="right" valign="top">Pickup Time  :</td>
-            <td>&nbsp;</td>
-            <td><input name="Pickuptime" id="Pickuptime" maxlength="50" size="20" type="TEXT"></td>
+            <td>
+            
+<div class='input-group date' id="datetimepicker2">
+                    <input type='text' name="date_courier" class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </td>
           </tr>
           <tr>
             <td class="TrackNormalBlue" align="right" valign="top">Status :</td>
             <td>&nbsp;</td>
-            <td><select name="status" id="status">
+            <td>
+            <select name="status" id="status">
+            	<?php
+            	$sql = "SELECT * FROM `tbl_status` WHERE id_status = '1'";
+            	$result = dbQuery($sql);		
+				while($data = dbArray($result)) {
+					extract($data);
+				?>
+				<option value="<?php echo $id_status ?>" selected><?php echo $name_status ?></option>
+				<?php
+				}
+				?>
+            </select>
+            <!-- <select name="status" id="status">
                 <option selected="selected" value="In Transit">In Transit</option>
-            </select></td>
+            </select> --></td>
           </tr>
           <tr>
             <td class="TrackNormalBlue" align="right" valign="top">Comments :</td>
@@ -651,9 +500,9 @@ function getSelected(opt)
   </tr>
 </tbody></table>
 
-<script src="jquery.min.js"></script>
+<!-- <script src="jquery.min.js"></script>
 
-	<script>
+ -->	<script>
 		$(function() {
 			$("#id").change(function(){
 				var id = $("#id option:selected").val();
@@ -666,10 +515,15 @@ function getSelected(opt)
 						'id': id
 					},
 					success: function (siswa) {
-						$("#Shippername").val(siswa['name']);
-						$("#Shipperphone").val(siswa['phone']);
-						$("#Shipperaddress").val(siswa['address']);
-
+						if (siswa.status == "M") {
+							$("#Shippername").val(siswa['name']);
+							$("#Shipperphone").val(siswa['phone']);
+							$("#Shipperaddress").val(siswa['address']);	
+						} else {
+							$("#Shippername").val('');
+							$("#Shipperphone").val('');
+							$("#Shipperaddress").val('');
+						}
 					}
 				});
 			});

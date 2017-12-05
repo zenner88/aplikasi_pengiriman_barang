@@ -1,8 +1,7 @@
 <?php
-session_start();
 require_once('database.php');
 require_once('library.php');
-isUser();
+
 $cid= (int)$_GET['cid'];
 
 $sql = "SELECT *
@@ -21,6 +20,7 @@ extract($data);
 <title>Admin</title>
 <link href="css/mystyle.css" rel="stylesheet" type="text/css">
 <link href="css/style.css" rel="stylesheet" type="text/css">
+
 <style type="text/css">
 .style1 {color: #FF0000}
 .style3 {font-family: verdana, tohama, arial}
@@ -34,7 +34,7 @@ extract($data);
   <tbody><tr>
 
     <td width="900">
-<?php include("header.php"); ?>
+<?php //include("header.php"); ?>
 
 	</td>
 
@@ -141,7 +141,7 @@ body {
 
     <tbody><tr>
 
-      <td class="Partext1" bgcolor="F9F5F5" align="center"><strong>Edit Shipment </strong></td>
+      <td class="Partext1" bgcolor="F9F5F5" align="center"><strong>Shipment Detail </strong></td>
 
     </tr>
 
@@ -161,7 +161,13 @@ body {
 
         <table border="0" cellpadding="1" cellspacing="1" width="80%">
 
-          <tbody><tr>
+          <tbody>
+          <tr>
+            <td>
+              <div style="text-align: center;">Origine</div>
+            </td>
+          </tr>
+          <tr>
 
             <td width="55%"><div align="left" class="style3">Shipper Name : </div></td>
 
@@ -199,7 +205,13 @@ body {
 
         <table border="0" cellpadding="1" cellspacing="1" width="80%">
 
-          <tbody><tr>
+          <tbody>
+          <tr>
+            <td>
+              <div style="text-align: center;">Destination</div>
+            </td>
+          </tr>
+          <tr>
 
             <td width="55%" class="style3"><div align="left">Receiver Name : </div></td>
 
@@ -247,7 +259,17 @@ body {
 
       <td class="style3" bgcolor="#FFFFFF" align="right">Ship Type  :</td>
 
-      <td class="style3" bgcolor="#FFFFFF"><?php echo $type; ?>&nbsp;</td>
+      <td class="style3" bgcolor="#FFFFFF">
+        <?php
+          $sql ="SELECT tbl_type_shipment.name_shipment FROM `tbl_courier` INNER JOIN tbl_type_shipment ON tbl_type_shipment.id_shipment = tbl_courier.type WHERE tbl_courier.type = '$type'";
+          $result = dbQuery($sql); 
+          while($data = dbArray($result)) {
+            extract($data); 
+            echo $name_shipment;
+          } 
+       ?>
+      
+      </td>
     </tr>
 
     <tr>
@@ -257,33 +279,7 @@ body {
       <td class="style3" bgcolor="#FFFFFF"><?php echo $weight; ?>&nbsp;kg</td>
     </tr>
 
-    <tr>
-
-      <td class="style3" bgcolor="#F3F3F3" align="right">Invoice no  :</td>
-
-      <td class="style3" bgcolor="#FFFFFF"><?php echo $invice_no; ?>&nbsp;</td>
-    </tr>
-
-    <tr>
-
-      <td class="style3" bgcolor="#F3F3F3" align="right">Booking Mode :</td>
-
-      <td class="style3" bgcolor="#FFFFFF"><?php echo $book_mode; ?>&nbsp;</td>
-    </tr>
-
-    <tr>
-
-      <td class="style3" bgcolor="#F3F3F3" align="right">Total freight : </td>
-
-      <td class="style3" bgcolor="#FFFFFF"><?php echo $freight; ?>&nbsp;Rs.</td>
-    </tr>
-
-    <tr>
-
-      <td class="style3" bgcolor="#F3F3F3" align="right">Mode : </td>
-
-      <td class="style3" bgcolor="#FFFFFF"><?php echo $mode; ?></td>
-    </tr> 
+     
 
     <tr> 
 
@@ -291,16 +287,22 @@ body {
 
       <td class="style3" bgcolor="#FFFFFF">
 
-        <?php echo $pick_date; ?> -<span class="gentxt">
-<?php echo $pick_time; ?>
-        </span> </td> 
+        <?php echo (new DateTime($date_courier))->format("Y-m-d"); ?> -<span class="gentxt">
+        </span> <?php echo (new DateTime($date_courier))->format("H:i"); ?></td> 
     </tr> 
 
     <tr> 
 
       <td class="style3" bgcolor="#FFFFFF" align="right">Status :</td> 
 
-      <td class="style3" bgcolor="#FFFFFF">&nbsp;<?php echo $status; ?></td> 
+      <td class="style3" bgcolor="#FFFFFF"><?php 
+        $sql ="SELECT tbl_courier.status, tbl_status.name_status FROM tbl_courier INNER JOIN tbl_status ON tbl_status.id_status = tbl_courier.status WHERE tbl_courier.status = '$status'";
+        $result = dbQuery($sql); 
+        while($data = dbArray($result)) {
+          extract($data); 
+          echo $name_status;
+        }  
+      ?></td> 
     </tr> 
 
      
@@ -368,15 +370,20 @@ body {
 
 
 <select name="status">
-
-<option value="In Transit">In Transit</option>
-
-<option value="Landed">Landed</option>
-
-<option value="Delayed">Delayed</option>
-
-<option value="Completed">Completed</option>
-<option value="Onhold">Onhold</option>
+  <?php
+   $idStatus = $status;
+   $query = "SELECT * FROM tbl_status";
+   $hasil = dbQuery($query);
+   while ($data = dbArray($hasil))
+   {
+      extract($data);
+      if($idStatus == $id_status) {
+        echo "<option value='".$id_status."' selected>".$name_status."</option>";  
+      } else {
+        echo "<option value='".$id_status."'>".$name_status."</option>";
+      }
+   }
+  ?>
 </select>
 
 <br></td>

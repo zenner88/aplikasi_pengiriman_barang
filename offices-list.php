@@ -1,9 +1,8 @@
 <?php
-session_start();
 require_once('database.php');
 require_once('library.php');
 
-isUser();
+
 
 $sql = "SELECT *
 		FROM tbl_offices";
@@ -27,7 +26,7 @@ $result = dbQuery($sql);
   <tbody><tr>
     <td width="900">
 
-<?php include("header.php"); ?>
+<?php //include("header.php"); ?>
 	</td>
   </tr>
   

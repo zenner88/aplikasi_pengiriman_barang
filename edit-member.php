@@ -1,8 +1,8 @@
 <?php
-session_start();
+
 require_once('database.php');
 require_once('library.php');
-isUser();
+
 $cid= (int)$_GET['cid'];
 
 $sql = "SELECT *
@@ -31,7 +31,7 @@ extract($data);
   <tbody><tr>
 
     <td width="900">
-<?php include("header.php"); ?>
+<?php //include("header.php"); ?>
 
 	</td>
 

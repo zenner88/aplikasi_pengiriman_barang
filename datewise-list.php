@@ -1,10 +1,9 @@
 <?php
-session_start();
+
 require_once('database.php');
 require_once('library.php');
-isUser();
 
-$sql = "SELECT cid, cons_no, ship_name, rev_name, pick_date, pick_time, status
+$sql = "SELECT cid, cons_no, ship_name, rev_name, date_courier, status
 		FROM tbl_courier
 		WHERE status != 'Delivered' 
 		GROUP BY book_date
@@ -29,7 +28,7 @@ $result = dbQuery($sql);
   <tbody><tr>
     <td width="900">
 
-<?php include("header.php"); ?>
+<?php //include("header.php"); ?>
 	</td>
   </tr>
   
@@ -122,8 +121,15 @@ function confirmDel(field,msg)
       <td class="gentxt"><?php echo $cons_no; ?></td>
       <td class="gentxt"><?php echo $ship_name; ?></td>
       <td class="gentxt"><?php echo $rev_name; ?></td>
-      <td class="gentxt"><?php echo $pick_date; ?> - <?php echo $pick_time; ?></td>
-      <td class="gentxt"><?php echo $status; ?></td>
+      <td class="gentxt"><?php echo (new DateTime($date_courier))->format("d/m/Y") ?> - <?php echo (new DateTime($date_courier))->format("H:i") ?></td>
+      <td class="gentxt"><?php 
+        $sql ="SELECT tbl_courier.status, tbl_status.name_status FROM tbl_courier INNER JOIN tbl_status ON tbl_status.id_status = tbl_courier.status WHERE tbl_courier.status = '$status'";
+        $result = dbQuery($sql); 
+        while($data = dbArray($result)) {
+          extract($data); 
+          echo $name_status;
+        }  
+      ?></td>
     </tr>
     <?php
 	}//while

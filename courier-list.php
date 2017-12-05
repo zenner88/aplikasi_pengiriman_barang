@@ -1,15 +1,7 @@
 <?php
-session_start();
 require_once('database.php');
 require_once('library.php');
-isUser();
 
-$sql = "SELECT cid, cons_no, ship_name, rev_name, pick_date, pick_time, status
-		FROM tbl_courier
-		WHERE status != 'Delivered'
-		ORDER BY cid DESC 
-		LIMIT 0, 20";
-$result = dbQuery($sql);		
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -29,7 +21,7 @@ $result = dbQuery($sql);
   <tbody><tr>
     <td width="900">
 
-<?php include("header.php"); ?>
+<?php //include("header.php"); ?>
 	</td>
   </tr>
   
@@ -108,26 +100,41 @@ function confirmDel(field,msg)
       <td class="newtext" bgcolor="#EDEDED" width="11%">Pickup Date/Time</td>
       <td class="newtext" bgcolor="#EDEDED" width="9%">Status</td>
     </tr>
-	<?php
-	
-	while($data = dbFetchAssoc($result)){
-	extract($data);	
-	?>
-      <tr onMouseOver="this.bgColor='gold';" onMouseOut="this.bgColor='#FFFFFF';" bgcolor="#FFFFFF">
-	
-      <td class="gentxt" align="center">
-	  <a href="edit-courier.php?cid=<?php echo $cid; ?>">
-	  <img src="images/edit_icon.gif" border="0" height="20" width="20"></a>
-	  </td>
-      <td class="gentxt"><?php echo $cons_no; ?></td>
-      <td class="gentxt"><?php echo $ship_name; ?></td>
-      <td class="gentxt"><?php echo $rev_name; ?></td>
-      <td class="gentxt"><?php echo $pick_date; ?> - <?php echo $pick_time; ?></td>
-      <td class="gentxt"><?php echo $status; ?></td>
-    </tr>
     <?php
-	}//while
-	?>
+            	$sql = "SELECT * FROM tbl_courier ORDER BY cid DESC LIMIT 0, 20";
+            	$result = dbQuery($sql);		
+				while($data = dbArray($result)) {
+					extract($data);
+				?>
+				<tr>
+					<td class="gentxt" align="center">
+						<a href="edit-courier.php?cid=<?php echo $cid; ?>">
+	  						<img src="images/edit_icon.gif" border="0" height="20" width="20">
+	  					</a>
+					</td>
+					<td class="gentxt"><?php echo $cons_no; ?></td>
+					<td class="gentxt"><?php echo $ship_name; ?></td>
+					<td class="gentxt"><?php echo $rev_name; ?></td>
+					<td class="gentxt">
+						<?php echo (new DateTime($date_courier))->format("d/m/Y") ?> - 
+						<?php echo (new DateTime($date_courier))->format("H:i") ?>	
+					</td>
+					<td class="gentxt">
+					<?php 
+        				$sqlStatus ="SELECT tbl_courier.status, tbl_status.name_status FROM tbl_courier INNER JOIN tbl_status ON tbl_status.id_status = tbl_courier.status WHERE tbl_courier.status = '$status'";
+        				$resultStatus = dbQuery($sqlStatus); 
+        				while($dataStatus = dbArray($resultStatus)) {
+          					extract($dataStatus); 
+          					echo $name_status;
+        				}  
+      				?>	
+      				</td>
+				</tr>
+				
+				<?php
+				}
+				?>
+	
 	  </tbody></table>
   <br>
 	

@@ -1,5 +1,6 @@
 <?php
 //start session
+error_reporting(0);
 session_start();
 
 require_once('database.php');
@@ -54,25 +55,34 @@ function addCons(){
 	$ConsignmentNo = $_POST['ConsignmentNo'];
 	$Shiptype = $_POST['Shiptype'];
 	$Weight = $_POST['jumlah'];
-	$Invoiceno = $_POST['Invoiceno'];
+	//$Invoiceno = $_POST['Invoiceno'];
 	$Qnty = $_POST['Qnty'];
 
 	$Bookingmode = $_POST['Bookingmode'];
 	$Totalfreight = $_POST['Totalfreight'];
 	$Mode = $_POST['Mode'];
-
+	$use_mode = $_POST['use_mode'];
 
 	$Packupdate = $_POST['Packupdate'];
 	$Pickuptime = $_POST['Pickuptime'];
 	$status = $_POST['status'];
 	$Comments = $_POST['Comments'];
+	date_default_timezone_set('Asia/Jakarta');
+	//$time = date('Y-m-d H:i:s');
+	$date_courier = $_POST['date_courier'];
+	$time = (new DateTime($date_courier))->format('Y-m-d H:i:s');
+	//$Destination = $_POST['Destination'];
+	
 
 
-	$sql = "INSERT INTO tbl_courier (cons_no, id_member, ship_name, phone, s_add, rev_name, r_phone, r_add,  type, weight, invice_no, qty, book_mode, freight, mode, pick_date, pick_time, status, comments, book_date )
-			VALUES('$ConsignmentNo', '$id', '$Shippername','$Shipperphone', '$Shipperaddress', '$Receivername','$Receiverphone','$Receiveraddress', '$Shiptype',$Weight , '$Invoiceno', $Qnty, '$Bookingmode', '$Totalfreight', '$Mode', '$Packupdate', '$Pickuptime', '$status', '$Comments', NOW())";
+	$sql = "INSERT INTO tbl_courier (cons_no, id_member, ship_name, phone, s_add, rev_name, r_phone, r_add,  type, weight, qty, book_mode, freight, mode, use_mode, status, comments, book_date, date_courier)
+			VALUES('$ConsignmentNo', '$id', '$Shippername','$Shipperphone', '$Shipperaddress', '$Receivername','$Receiverphone','$Receiveraddress', '$Shiptype', $Weight, $Qnty, '$Bookingmode', '$Totalfreight', '$Mode', '$use_mode', '$status', '$Comments', NOW(), '$time')";
 	//echo $sql;
 	dbQuery($sql);
-	header('Location: courier-add-success.php');
+	$sql_1 = "INSERT INTO tbl_courier_track (cid, cons_no, status_track, comments_track, bk_time)
+			VALUES ($id, '$ConsignmentNo', '$status', '$Comments', NOW())";
+	dbQuery($sql_1);
+	header('Location: admin.php?module=add-courier');
 
 	//echo $Ship;
 }//addCons
@@ -81,7 +91,7 @@ function addCons(){
 function markDelivered() {
 	$cid = (int)$_GET['cid'];
 	$sql = "UPDATE tbl_courier
-			SET status = 'Delivered'
+			SET status = '4'
 			WHERE cid= $cid";
 	dbQuery($sql);
 	header('Location: delivered-success.php');
@@ -100,7 +110,7 @@ function addNewOffice() {
 	$sql = "INSERT INTO tbl_offices (off_name, address, city, ph_no, office_time, contact_person)
 			VALUES ('$OfficeName', '$OfficeAddress', '$City', '$PhoneNo', '$OfficeTiming', '$ContactPerson')";
 	dbQuery($sql);
-	header('Location: office-add-success.php');
+	header('Location: admin.php?module=add-office');
 }//addNewOffice
 
 function addManager() {
@@ -115,7 +125,7 @@ function addManager() {
 	$sql = "INSERT INTO tbl_courier_officers (officer_name, off_pwd, address, email, ph_no, office, reg_date)
 			VALUES ('$ManagerName', '$Password', '$Address', '$Email', '$PhoneNo', '$OfficeName', NOW())";
 	dbQuery($sql);
-	header('Location: manager-add-success.php');
+	header('Location: admin.php?module=manage-list.php');
 
 }//addNewOffice
 
@@ -126,31 +136,24 @@ function updateStatus() {
 	$comments = $_POST['comments'];
 	$cid = (int)$_POST['cid'];
 	$cons_no = $_POST['cons_no'];
+	date_default_timezone_set('Asia/Jakarta');
+	$time = date('Y-m-d H:i:s');
 	//$OfficeName = $_POST['OfficeName'];
 
-	$sql = "INSERT INTO tbl_courier_track (cid, cons_no, current_city, status, comments, bk_time)
-			VALUES ($cid, '$cons_no', '$OfficeName', '$status', '$comments', NOW())";
+	$sql = "INSERT INTO tbl_courier_track (cid, cons_no, current_city, status_track, comments_track, bk_time)
+			VALUES ($cid, '$cons_no', '$OfficeName', '$status', '$comments', '$time')";
 	dbQuery($sql);
 
-	$sql_1 = "UPDATE tbl_courier
-				SET status = '$status'
-				WHERE cid = $cid
-				AND cons_no = '$cons_no'";
+	$sql_1 = "UPDATE tbl_courier SET status = '$status', comments = '$comments', date_courier = '$time' WHERE cid = '$cid' AND cons_no = '$cons_no'";
 	dbQuery($sql_1);
 
-	header('Location: update-success.php');
+	header('Location: admin.php?module=courier-list');
 
 }//addNewOffice
 
 
 
 function logOut(){
-	if(isset($_SESSION['user_name'])){
-		unset($_SESSION['user_name']);
-	}
-	if(isset($_SESSION['user_type'])){
-		unset($_SESSION['user_type']);
-	}
 	session_destroy();
 	header('Location: login.php');
 }//logOut
@@ -166,7 +169,7 @@ function addMember(){
 			VALUES('$name', '$phone','$address', '$ket')";
 	//echo $sql;
 	dbQuery($sql);
-	header('Location: member-add-success.php');
+	header('Location: admin.php?module=add-member');
 
 	//echo $Ship;
 }//addCons
@@ -185,7 +188,7 @@ function updateMember() {
 				WHERE id = $cid";
 	dbQuery($sql);
 
-	header('Location: update-success-member.php');
+	header('Location: admin.php?module=add-member');
 
 }
 

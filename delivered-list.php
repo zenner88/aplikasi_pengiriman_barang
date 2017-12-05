@@ -1,8 +1,7 @@
 <?php
-session_start();
 require_once('database.php');
 require_once('library.php');
-isUser();
+
 
 $sql = "SELECT cid, cons_no, ship_name, rev_name, pick_date, pick_time, status
 		FROM tbl_courier
@@ -29,7 +28,7 @@ $result = dbQuery($sql);
   <tbody><tr>
     <td width="900">
 
-<?php include("header.php"); ?>
+<?php //include("header.php"); ?>
 	</td>
   </tr>
   

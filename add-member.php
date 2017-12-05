@@ -1,10 +1,7 @@
 <?php
-session_start();
 require_once('database.php');
 require_once('library.php');
 $rand = get_rand_id(8);
-echo $rand;
-isUser();
 
 $sql = "SELECT id,name,phone,address,ket
 		FROM tbl_member
@@ -118,7 +115,7 @@ function MM_validateForm() { //v4.0
 </head>
 
 <body>
-<?php include("header.php"); ?>
+<?php //include("header.php"); ?>
 
 	</td>
   </tr>

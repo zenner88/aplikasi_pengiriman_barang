@@ -1,8 +1,7 @@
 <?php
-session_start();
 require_once('database.php');
 require_once('library.php');
-isUser();
+
 
 $sql = "SELECT DISTINCT(off_name)
 		FROM tbl_offices";
@@ -114,7 +113,7 @@ function MM_validateForm() { //v4.0
 </head>
 
 <body>
-<?php include("header.php"); ?>
+<?php //include("header.php"); ?>
 
 	</td>
   </tr>

@@ -32,6 +32,9 @@ function dbFetchAssoc($result)
 {
 	return mysql_fetch_assoc($result);
 }
+function dbArray($result) {
+	return mysql_fetch_array($result);
+}
 
 function dbFetchRow($result) 
 {
