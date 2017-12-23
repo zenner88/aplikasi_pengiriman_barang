@@ -25,7 +25,7 @@
 <body>
   <div class="container">
     <div style="width: 400px; margin: 0 auto; padding: 8% 0 0 0;">
-      <div style="box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24); background: #fff; padding: 10%">
+      <div class="clearfix" style="box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24); background: #fff; padding: 10%">
         <form name="form1" id="form1" method="post" action="ceklogin.php">
           <div class="col-md-12" style="text-align: center;">
             <label>Login Administrator</label>

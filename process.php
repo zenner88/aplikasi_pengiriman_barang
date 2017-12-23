@@ -1,6 +1,6 @@
 <?php
 //start session
-error_reporting(0);
+
 session_start();
 
 require_once('database.php');
@@ -63,20 +63,20 @@ function addCons(){
 	$Mode = $_POST['Mode'];
 	$use_mode = $_POST['use_mode'];
 
-	$Packupdate = $_POST['Packupdate'];
-	$Pickuptime = $_POST['Pickuptime'];
+	//$Packupdate = $_POST['Packupdate'];
+	//$Pickuptime = $_POST['Pickuptime'];
 	$status = $_POST['status'];
 	$Comments = $_POST['Comments'];
-	date_default_timezone_set('Asia/Jakarta');
-	//$time = date('Y-m-d H:i:s');
 	$date_courier = $_POST['date_courier'];
-	$time = (new DateTime($date_courier))->format('Y-m-d H:i:s');
+	$date_courier = preg_replace('#(\d{2})/(\d{2})/(\d{4})\s(.*)#', '$3-$2-$1 $4', $date_courier);
+	//$time = (new DateTime($date_courier))->format('Y-m-d H:i:s');
+	//$time = DateTime::createFromFormat('Y-m-d H:i:s', $date_courier);
 	//$Destination = $_POST['Destination'];
 	
 
 
 	$sql = "INSERT INTO tbl_courier (cons_no, id_member, ship_name, phone, s_add, rev_name, r_phone, r_add,  type, weight, qty, book_mode, freight, mode, use_mode, status, comments, book_date, date_courier)
-			VALUES('$ConsignmentNo', '$id', '$Shippername','$Shipperphone', '$Shipperaddress', '$Receivername','$Receiverphone','$Receiveraddress', '$Shiptype', $Weight, $Qnty, '$Bookingmode', '$Totalfreight', '$Mode', '$use_mode', '$status', '$Comments', NOW(), '$time')";
+			VALUES('$ConsignmentNo', '$id', '$Shippername','$Shipperphone', '$Shipperaddress', '$Receivername','$Receiverphone','$Receiveraddress', '$Shiptype', $Weight, $Qnty, '$Bookingmode', '$Totalfreight', '$Mode', '$use_mode', '$status', '$Comments', NOW(), '$date_courier')";
 	//echo $sql;
 	dbQuery($sql);
 	$sql_1 = "INSERT INTO tbl_courier_track (cid, cons_no, status_track, comments_track, bk_time)
@@ -136,7 +136,6 @@ function updateStatus() {
 	$comments = $_POST['comments'];
 	$cid = (int)$_POST['cid'];
 	$cons_no = $_POST['cons_no'];
-	date_default_timezone_set('Asia/Jakarta');
 	$time = date('Y-m-d H:i:s');
 	//$OfficeName = $_POST['OfficeName'];
 
