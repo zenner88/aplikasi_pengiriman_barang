@@ -430,14 +430,14 @@ function MM_validateForm() { //v4.0
           </tr> -->
           <tr>
             <td class="TrackNormalBlue" align="right">Pickup Date  :</td>
+            <td>&nbsp;</td>            
             <td>
-            
-<div class='input-group date' id="datetimepicker2">
-                    <input type='text' name="date_courier" class="form-control" />
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
+            <div class='input-group date' id="datetimepicker2">
+                <input type='text' name="date_courier" class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
             </td>
           </tr>
           <tr>
